@@ -1,54 +1,65 @@
-// Player Filter
+// FILTER
 function filterPlayers(role){
-  let cards = document.querySelectorAll('#playerList .card');
-  cards.forEach(card => {
-    card.style.display = (role === 'all' || card.classList.contains(role)) ? 'block' : 'none';
-  });
+ let cards=document.querySelectorAll(".card");
+ cards.forEach(card=>{
+   if(role==="all" || card.classList.contains(role)){
+     card.style.display="block";
+   } else{
+     card.style.display="none";
+   }
+ });
 }
 
-// Voting Buttons
-const voteButtons = document.querySelectorAll('.vote-btn');
-voteButtons.forEach(btn => {
-  btn.addEventListener('click', () => {
-    let count = parseInt(btn.textContent.replace('❤️ ',''));
-    count++;
-    btn.textContent = `❤️ ${count}`;
-  });
+// VOTE
+document.querySelectorAll(".vote-btn").forEach(btn=>{
+ btn.onclick=()=>{
+   let count=parseInt(btn.innerText.replace("❤️",""))+1;
+   btn.innerText="❤️ "+count;
+ }
 });
 
-// Chart.js Example
-const ctx = document.getElementById('chart').getContext('2d');
-const chart = new Chart(ctx, {
-  type: 'bar',
-  data: {
-    labels: ['2023', '2024', '2025', '2026'],
-    datasets: [{
-      label: 'Wins',
-      data: [10, 12, 14, 16],
-      backgroundColor: '#a40000'
-    },{
-      label: 'Losses',
-      data: [6, 4, 2, 0],
-      backgroundColor: '#ffcc00'
-    }]
-  },
-  options: {
-    responsive: true,
-    plugins: {
-      legend: {position:'top'},
-      title: {display:true, text:'RCB Team Performance'}
+// CHARTS
+window.onload = function(){
+
+  // BAR CHART
+  new Chart(document.getElementById("barChart"),{
+    type:'bar',
+    data:{
+      labels:["2023","2024","2025","2026"],
+      datasets:[
+        {label:"Wins",data:[10,12,14,16],backgroundColor:"red"},
+        {label:"Losses",data:[6,4,2,1],backgroundColor:"gold"}
+      ]
     },
-    scales: {y: {beginAtZero:true}}
-  }
-});
-
-// Scroll Reveal for Cards
-const cards = document.querySelectorAll('.card');
-const observer = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
-    if(entry.isIntersecting){
-      entry.target.classList.add('show');
+    options:{
+      responsive:true,
+      plugins:{legend:{position:'top'}},
+      scales:{y:{beginAtZero:true}}
     }
   });
-}, { threshold: 0.2 });
-cards.forEach(card => observer.observe(card));
+
+  // PIE CHART
+  new Chart(document.getElementById("pieChart"),{
+    type:'pie',
+    data:{
+      labels:["Wins","Losses"],
+      datasets:[{
+        data:[16,4],
+        backgroundColor:["red","gold"],
+        hoverOffset:20,
+        borderColor:"#000",
+        borderWidth:2
+      }]
+    },
+    options:{
+      responsive:true,
+      plugins:{
+        legend:{position:'bottom', labels:{color:'gold', font:{size:14}}},
+        tooltip:{callbacks:{label:function(context){
+          return context.label + ': ' + context.parsed + ' matches';
+        }}}
+      }
+    }
+  });
+
+}
